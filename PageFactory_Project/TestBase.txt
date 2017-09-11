@@ -1,0 +1,122 @@
+package com.test.automation.uiAutomation.testbase;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.opera.OperaDriver;
+import org.testng.Reporter;
+
+import com.test.automation.uiAutomation.customListner.Listener;
+
+import jxl.read.biff.BiffException;
+
+public class TestBase {
+	public static final Logger log = Logger.getLogger(TestBase.class.getName());
+    
+	public Properties OR ;
+	public File f1;
+	public FileInputStream file ;
+	
+	public static WebDriver driver;
+	//String url="http://automationpractice.com/index.php";
+	//String browser="chrome";
+	Listener lis;
+	public ReadExecl excel ;
+	
+	public void init() throws IOException{
+		
+		TestBase test =new TestBase();
+		test.loadPropertiesFile();
+		selectBrowser(test.OR.getProperty("browser"));
+		//lis = new Listener(driver);
+		getUrl(test.OR.getProperty("url"));
+		String log4jConfpath="log4j.properties";
+		PropertyConfigurator.configure(log4jConfpath);
+		
+	}
+	
+	public void selectBrowser(String browser){
+		if(browser.equalsIgnoreCase("firefox")){
+			System.setProperty("webdriver.gecko.driver", "E:geckodriver.exe");
+	        log.info("creating object of "+browser);
+			driver = new FirefoxDriver();
+		}
+		else if(browser.equalsIgnoreCase("chrome")){
+			System.setProperty("webdriver.chrome.driver", "E:chromedriver.exe");
+	        log.info("Creating object of "+browser);
+	        driver = new ChromeDriver();
+		}
+		else if(browser.equalsIgnoreCase("opera")){
+			System.setProperty("webdriver.opera.driver", System.getProperty("user.dir")+"/drivers/operadriver.exe");
+	        log.info("Creating object of "+browser);
+	        driver = new OperaDriver();
+		}
+		else if(browser.equalsIgnoreCase("ie")){
+			System.setProperty("webdriver.ie.driver", System.getProperty("user.dir")+"/drivers/IEDriverServer.exe");
+	        log.info("Creating object of "+browser);
+	        driver = new InternetExplorerDriver();
+		}
+	}
+		public void getUrl(String url){
+		log.info("navigate to "+url);
+		driver.get(url);
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+	}
+		
+		public void getScreenShot(String name){
+			
+			Calendar calendar = Calendar.getInstance();
+			SimpleDateFormat formater= new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss");
+			
+			File srcFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		try{	
+			String reportDirectory= new File(System.getProperty("user.dir")).getAbsolutePath()+"/src/main/java/com/test/automation/uiAutomation/ScreenShot/";
+		    File destFile = new File((String)reportDirectory+name+"_"+formater.format(calendar.getTime())+".png");  
+             FileUtils.copyFile(srcFile, destFile);	
+             //This will be help us to link the screen shot to testNG Report	
+             Reporter.log("<a href='" + destFile.getAbsolutePath() + "'> <img src='" + destFile.getAbsolutePath() + "' height='100' width ='100'/></a>");
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		}
+		
+		public void loadPropertiesFile() throws IOException{
+		      OR = new Properties();
+		      f1= new File(System.getProperty("user.dir")+"/src/main/java/com/test/automation/uiAutomation/config/config.properties");
+		      file = new FileInputStream(f1);
+		      OR.load(file);
+		      
+		      f1= new File(System.getProperty("user.dir")+"/src/main/java/com/test/automation/uiAutomation/config/or.properties");
+		      file = new FileInputStream(f1);
+		      OR.load(file);
+		}
+	/*	public void loadproperies() throws IOException{
+			TestBase test=new TestBase();
+			test.loadPropertiesFile();
+			System.out.println(test.OR.getProperty("url"));
+		}*/
+		
+		public Object[][] getData(String excelName,String sheetName) throws BiffException, IOException{
+			    String	excellocation =System.getProperty("user.dir")+"/src/main/java/com/test/automation/uiAutomation/data/"+excelName+".xls";
+		  	    String sheetname = "Sheet1";
+		    	excel=new ReadExecl();
+		     return	excel.readexel(excellocation, sheetname);
+		}
+}

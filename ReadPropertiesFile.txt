@@ -1,0 +1,55 @@
+package testBase;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
+public class TestProperties1 {
+
+	static Properties properties; 
+	public static void loaddata() throws IOException{
+		properties = new Properties();
+		File f= new File(System.getProperty("user.dir")+"\\Test.properties");
+	   FileReader obj=new FileReader(f);
+		properties.load(obj);
+	}
+	public static String getobject(String Data) throws IOException{
+		loaddata();
+		String data= properties.getProperty(Data);
+		return data;
+		
+		
+	}
+}
+***********************************************************************************************************
+
+package praneeth;
+
+import java.io.IOException;
+
+import org.testng.annotations.Test;
+
+import testBase.TestProperties1;
+
+public class TestPropertiesdata extends TestProperties1{
+
+	@Test
+	public void init() throws IOException{
+		String name = getobject("Name");
+		System.out.println(name);
+				
+		String place = getobject("Place");
+		System.out.println(place);
+		
+		String No = getobject("MobileNo");
+		System.out.println(No);
+		
+		
+		
+		
+		
+	}
+	
+}
+*******************************************************************************************************

@@ -1,0 +1,35 @@
+package com.test.automation.uiAutomation.config;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.openqa.selenium.WebDriver;
+
+public class PropertiesFileReading {
+	WebDriver driver;
+	public Properties OR ;
+	public File f1;
+	public FileInputStream file ;
+	
+	public void loadPropertiesFile() throws IOException{
+	      OR = new Properties();
+	      f1= new File(System.getProperty("user.dir")+"/src/main/java/com/test/automation/uiAutomation/config/config.properties");
+	      file = new FileInputStream(f1);
+	      OR.load(file);
+	      
+	      f1= new File(System.getProperty("user.dir")+"/src/main/java/com/test/automation/uiAutomation/config/or.properties");
+	      file = new FileInputStream(f1);
+	      OR.load(file);
+	}
+	
+	public static void main(String [] agrs) throws IOException
+	{
+		PropertiesFileReading test=new PropertiesFileReading();
+		test.loadPropertiesFile();
+		System.out.println(test.OR.getProperty("url"));
+		System.out.println(test.OR.getProperty("test"));
+	}
+	
+}

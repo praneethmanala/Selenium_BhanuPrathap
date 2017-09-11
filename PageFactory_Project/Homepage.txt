@@ -1,0 +1,85 @@
+package com.test.automation.uiAutomation.uiActions;
+
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.test.automation.uiAutomation.testbase.TestBase;
+
+import jxl.read.biff.BiffException;
+
+public class Homepage extends TestBase{
+	public static final Logger log=Logger.getLogger(Homepage.class.getName());
+	WebDriver driver;
+	
+	@FindBy(xpath=".//*[@id='header']/div[2]/div/div/nav/div[1]/a")
+	WebElement signIn;
+	
+	@FindBy(xpath="//input[@id='email']")
+	WebElement loginEmailAddress;
+	
+	@FindBy(xpath="//input[@id='passwd']")
+	WebElement loginPassword;
+	
+	@FindBy(xpath="//*[@id='SubmitLogin']")
+	WebElement submitButton;
+	
+	@FindBy(xpath="//*[@id='center_column']/div[1]/ol/li")
+	WebElement authenticationFailed;
+	
+	/*@FindBy(xpath="//div[@id='block_top_menu']/ul/li/child::a[contains(text(),'"+menuName+"')]")
+	WebElement clickonNavigationMenu;
+	*/
+   //Constructor	
+	public Homepage(WebDriver driver){
+		PageFactory.initElements(driver,this);
+	}
+	
+	/*@DataProvider(name="testData")
+	public Object[][] DataSource() throws BiffException, IOException{
+		return getData("DataDriven1","Sheet1");
+		
+	}
+	*/
+	public void loginToApplication(String emailAddress,String passWord){
+		signIn.click();
+     	log.info("Clicked on Signin and the object is "+signIn.toString());
+		loginEmailAddress.sendKeys(emailAddress);
+		log.info("entered email address "+emailAddress+" and the object is "+loginEmailAddress.toString());
+		loginPassword.sendKeys(passWord);
+		log.info("entered password "+passWord+" and the object is "+passWord.toString());
+		submitButton.click();
+		log.info("Clicked on submitButton and the object is "+submitButton.toString());
+		
+	}
+	public String getInvalidLoginText(){
+		log.info("error message is :-"+authenticationFailed.getText());
+		return authenticationFailed.getText();
+		
+	}
+    	public void clickonNavigationMenu(String menuName){
+		driver.findElement(By.xpath("//div[@id='block_top_menu']/ul/li/child::a[contains(text(),'"+menuName+"')]")).click();
+		log.info("Clicked on :-"+menuName+" navigation menu ");
+	}
+	
+	
+	
+	public void clickonProductMainmenu(String productMenu){
+		driver.findElement(By.xpath(".//div[@id='block_top_menu']/ul/li/child::a[contains(text(),'Women')]/following-sibling::ul/li/child::a[contains(text(),'"+productMenu+"')]")).click();
+	}
+	
+	/*@DataProvider(name="testData")
+	public Object[][] DataSource() throws BiffException, IOException{
+		return getData("DataDriven1","Sheet1");
+		
+		
+		
+	}*/
+}

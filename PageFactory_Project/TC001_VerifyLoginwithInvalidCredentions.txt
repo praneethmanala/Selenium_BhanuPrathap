@@ -1,0 +1,60 @@
+package com.test.automation.uiAutomation.homepage;
+
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.test.automation.uiAutomation.testbase.TestBase;
+import com.test.automation.uiAutomation.uiActions.Homepage;
+
+import jxl.read.biff.BiffException;
+
+public class TC001_VerifyLoginwithInvalidCredentails extends TestBase{
+	
+	public static final Logger log = Logger.getLogger(TC001_VerifyLoginwithInvalidCredentails.class.getName());
+   
+	
+	//TestBase testbase ;
+	//String email=System.currentTimeMillis()+"@gmail.com";
+	/*String email="praneethmanala@gmail.com";
+	String password1="praneeth";
+ */
+	
+	@DataProvider(name="testData")
+	public Object[][] DataSource() throws BiffException, IOException{
+		Object[][] testRecords = getData("DataDriven1","Sheet1");
+		return testRecords;
+	}
+    Homepage homepage;
+	@BeforeTest
+	public void setup() throws IOException{
+	init();
+	}
+	
+	@Test(dataProvider="testData")
+	public void VerifyLoginwithInvalidCredentails(String emailAddress ,String PassWord) throws InterruptedException{
+		log.info("============== Starting VerifyLoginwithInvalidCredentails Test =====================");
+	//	getScreenShot("Login_");
+		System.out.println("driver is "+driver);
+		homepage = new Homepage(driver);
+		homepage.loginToApplication(emailAddress, PassWord);
+		log.info("============== Finished VerifyLoginwithInvalidCredentails Test =====================");
+		//getScreenShot("Login_");
+		/*Assert.assertEquals(homepage.getInvalidLoginText(),"Authentication failed.");
+		Thread.sleep(2000);
+        homepage.clickonNavigationMenu("Women");*/
+     //  homepage.clickonProductMainmenu("Tops");
+	
+	}
+	@AfterTest
+	public void endTest(){
+	//	driver.close(); 
+	}
+}
